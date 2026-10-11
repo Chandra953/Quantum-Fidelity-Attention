@@ -317,7 +317,7 @@ Accuracy falls from 0.93 with exact scores to 0.76 at about three shots per scor
 Quantum fidelity attention outperforms dot-product attention on token-matching tasks, but the advantage comes from a kernel that is exactly computable classically. For angle-encoded states the fidelity is a cosine-product kernel, and any fidelity attention linearizes through an explicit $4^n$-dimensional feature map. The resulting layer, \cpla, matches the quantum model on matching tasks at linear cost and about 22$\times$ the speed of softmax attention at 4{,}096 tokens. On SST-2 the kernel-based layers trail dot-product attention, so the CP kernel is best viewed as a specialized similarity for matching-type structure. Future work should test \cpla{} in multi-head, multi-layer Transformers and on long-range benchmarks, and should look for quantum encodings that resist the reduction presented here.
 
 \section*{Code Availability}
-The Qiskit reference implementation with parameter-shift autograd, the statevector simulator, all attention variants and raw results are provided as supplementary material. % TODO: add repository URL
+The Qiskit reference implementation with parameter-shift autograd, the statevector simulator, all attention variants and raw results are available at \url{https://github.com/Chandra953/Quantum-Fidelity-Attention}.
 Experiments used PyTorch 2.14 and Qiskit 2.5 on a two-core CPU.
 
 \section*{Disclosure of AI Assistance}
