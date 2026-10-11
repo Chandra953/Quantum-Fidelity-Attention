@@ -1,0 +1,19 @@
+cff-version: 1.2.0
+message: "If you use this work, please cite it as below."
+title: "From Quantum Fidelity to Linear-Time Attention: An Exact Classical Reduction of Quantum Self-Attention"
+authors:
+  - family-names: "Singuru"
+    given-names: "Chandra Sekhar"
+    orcid: "https://orcid.org/0009-0004-0219-1960"
+    email: "sekharc669@gmail.com"
+    affiliation: "Independent Researcher"
+date-released: 2026-10-10
+version: "1.0.0"
+license: MIT
+repository-code: "https://github.com/Chandra953/Quantum-Fidelity-Attention"
+keywords:
+  - attention mechanism
+  - transformers
+  - linear attention
+  - quantum machine learning
+  - quantum kernels
