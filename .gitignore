@@ -13,3 +13,5 @@ paper/paper.pdf
 paper/preview/
 paper/figures/*.png
 .ipynb_checkpoints/
+
+logs/

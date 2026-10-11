@@ -11,7 +11,16 @@ import pandas as pd
 HERE = os.path.dirname(os.path.abspath(__file__))
 RES = os.path.join(HERE, "..", "results")
 FIG = os.path.join(HERE, "figures")
+ASSETS = os.path.join(HERE, "..", "assets")
 os.makedirs(FIG, exist_ok=True)
+os.makedirs(ASSETS, exist_ok=True)
+
+
+def save(fig, name):
+    """Vector PDF for the paper, PNG for the README."""
+    fig.savefig(os.path.join(FIG, name + ".pdf"), bbox_inches="tight")
+    fig.savefig(os.path.join(ASSETS, name + ".png"), bbox_inches="tight", dpi=200)
+    plt.close(fig)
 
 plt.rcParams.update({
     "font.family": "serif", "font.serif": ["Times", "Times New Roman", "DejaVu Serif"],
@@ -48,8 +57,7 @@ def fig_circuit():
     qc, _ = build_overlap_circuit(4, 1)
     qc.measure_all()
     f = qc.draw("mpl", fold=-1, scale=0.55, style={"name": "bw"})
-    f.savefig(os.path.join(FIG, "circuit.pdf"), bbox_inches="tight")
-    plt.close(f)
+    save(f, "circuit")
 
 
 def fig_accuracy():
@@ -76,8 +84,7 @@ def fig_accuracy():
     axes[0].set_yticklabels([MODELS[m][0] for m in order][::-1])
     axes[1].set_xlabel("Test accuracy (0.5 = chance)")
     fig.tight_layout(w_pad=0.8)
-    fig.savefig(os.path.join(FIG, "accuracy.pdf"), bbox_inches="tight")
-    plt.close(fig)
+    save(fig, "accuracy")
 
 
 def fig_timing():
@@ -100,8 +107,7 @@ def fig_timing():
     ax.legend(frameon=False, loc="lower left", bbox_to_anchor=(0.0, 1.0), ncol=2, columnspacing=1.0)
     ax.grid(color="#e5e5e5", lw=0.6, which="major")
     fig.tight_layout()
-    fig.savefig(os.path.join(FIG, "timing.pdf"), bbox_inches="tight")
-    plt.close(fig)
+    save(fig, "timing")
 
 
 def fig_gradvar():
@@ -122,8 +128,7 @@ def fig_gradvar():
     ax.legend(title="Ansatz layers", frameon=False, title_fontsize=7)
     ax.grid(color="#e5e5e5", lw=0.6, which="major")
     fig.tight_layout()
-    fig.savefig(os.path.join(FIG, "gradvar.pdf"), bbox_inches="tight")
-    plt.close(fig)
+    save(fig, "gradvar")
 
 
 def fig_noise():
@@ -150,8 +155,7 @@ def fig_noise():
     ax.set_xlim(-0.75, len(eps) - 0.5)
     ax.grid(axis="y", color="#e5e5e5", lw=0.6)
     fig.tight_layout()
-    fig.savefig(os.path.join(FIG, "noise.pdf"), bbox_inches="tight")
-    plt.close(fig)
+    save(fig, "noise")
 
 
 if __name__ == "__main__":

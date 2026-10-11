@@ -31,7 +31,7 @@ ORCID: 0009-0004-0219-1960}
 \maketitle
 
 \begin{abstract}
-Quantum self-attention models replace the Transformer's dot-product score with the fidelity between quantum states that encode two tokens. We ask where the accuracy gains reported for such models come from, and whether they require a quantum computer. We show analytically that, for angle-encoded states, the fidelity score equals a classical cosine-product (CP) kernel, and that any fidelity-based attention admits an explicit feature map of dimension $4^n$ for $n$ qubits. The second result yields cosine-product linear attention (\cpla), a classical layer whose cost grows linearly with sequence length. We compare nine attention variants, including a quantum layer implemented with the Qiskit Estimator and trained with exact parameter-shift gradients, on three token-matching tasks over five seeds and on the SST-2 sentiment benchmark. The quantum layer beats dot-product attention by 0.13 to 0.31 accuracy on matching tasks, but the classical CP kernel matches it within seed variance, and \cpla{} matches or exceeds it on two of three tasks while running about 22$\times$ faster than softmax attention at 4{,}096 tokens. Widening the dot-product baseline or using standard linear attention does not close the gap. On SST-2, by contrast, dot-product attention is best and all cosine-product layers, quantum or classical, trail it by 1.1 to 2.4 points, showing that the kernel suits matching-type structure rather than graded similarity. We further find that gradient variance of the quantum layer decays roughly exponentially with qubit count, and that accuracy degrades under simulated shot noise. The useful contribution of quantum self-attention, in this regime, is a kernel that classical Transformers can adopt directly.
+Quantum self-attention models replace the Transformer's dot-product score with the fidelity between quantum states that encode two tokens. We ask where the accuracy gains reported for such models come from, and whether they require a quantum computer. We show analytically that, for angle-encoded states, the fidelity score equals a classical cosine-product (CP) kernel, and that any fidelity-based attention admits an explicit feature map of dimension $4^n$ for $n$ qubits. The second result yields cosine-product linear attention (\cpla), a classical layer whose cost grows linearly with sequence length. We compare nine attention variants, including a quantum layer implemented with the Qiskit Estimator and trained with exact parameter-shift gradients, on three token-matching tasks over five seeds and on the SST-2 sentiment benchmark. The quantum layer beats dot-product attention by 0.13 to 0.31 accuracy on matching tasks, but the classical CP kernel matches it within seed variance, and \cpla{} matches or exceeds it on two of three tasks while running about 22$\times$ faster than softmax attention at 4{,}096 tokens. Widening the dot-product baseline or using standard linear attention does not close the gap. On SST-2, by contrast, dot-product attention is best and all cosine-product layers, quantum or classical, trail it by 1.2 to 2.4 points, showing that the kernel suits matching-type structure rather than graded similarity. We further find that gradient variance of the quantum layer decays roughly exponentially with qubit count, and that accuracy degrades under simulated shot noise. The useful contribution of quantum self-attention, in this regime, is a kernel that classical Transformers can adopt directly.
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -237,7 +237,7 @@ Attention layer & Dev & Test & Attn.\ params \\
 Dot product, $d_k{=}16$ & .772$\pm$.006 & \textbf{.777}$\pm$.008 & 10{,}400 \\
 Linear, elu$+1$         & .775$\pm$.013 & .772$\pm$.007 & 10{,}400 \\
 Dot product, $d_k{=}4$  & .778$\pm$.012 & .772$\pm$.010 & 8{,}840 \\
-CP kernel, softmax      & .767$\pm$.004 & .761$\pm$.005 & 8{,}581 \\
+CP kernel, softmax      & .763$\pm$.009 & .759$\pm$.008 & 8{,}581 \\
 \cpla{} (linear)        & .764$\pm$.011 & .756$\pm$.008 & 8{,}580 \\
 Quantum, frozen         & .764$\pm$.014 & .755$\pm$.008 & 8{,}581 \\
 Quantum fidelity        & .761$\pm$.012 & .753$\pm$.008 & 8{,}597 \\
@@ -246,7 +246,7 @@ No attention            & .715$\pm$.017 & .717$\pm$.015 & 0 \\
 \end{tabular}
 \end{table}
 
-On SST-2 the picture reverses (Table~\ref{tab:sst2}). Every attention layer improves on no attention by 3.7 to 6.1 points, but the dot-product and elu$+1$ linear layers are best, and the cosine-product layers, quantum and classical alike, trail them by 1.1 to 2.4 points on test accuracy. The quantum layer again tracks its classical counterparts: it is within 0.8 points of the CP kernel and 0.3 points of \cpla. Sentiment depends on graded semantic similarity rather than exact matches, and a kernel that peaks sharply at identical inputs offers no benefit there. We therefore present the CP kernel as a specialized similarity for matching-type structure, not a general replacement for dot-product attention.
+On SST-2 the picture reverses (Table~\ref{tab:sst2}). Every attention layer improves on no attention by 3.7 to 6.1 points, but the dot-product and elu$+1$ linear layers are best, and the cosine-product layers, quantum and classical alike, trail them by 1.2 to 2.4 points on test accuracy. The quantum layer again tracks its classical counterparts: it is within 0.6 points of the CP kernel and 0.3 points of \cpla. Sentiment depends on graded semantic similarity rather than exact matches, and a kernel that peaks sharply at identical inputs offers no benefit there. We therefore present the CP kernel as a specialized similarity for matching-type structure, not a general replacement for dot-product attention.
 
 \subsection{Efficiency}
 
@@ -257,7 +257,7 @@ On SST-2 the picture reverses (Table~\ref{tab:sst2}). Every attention layer impr
 \label{fig:timing}
 \end{figure}
 
-Fig.~\ref{fig:timing} confirms the cost analysis. Softmax dot-product attention and the pairwise CP kernel grow quadratically, taking 121 and 155~ms at $N=4{,}096$. \cpla{} grows linearly and takes 5.5~ms, about 22$\times$ faster than softmax attention. Elu$+1$ linear attention is faster still (1.9~ms) because its feature dimension is 16 rather than $4^n=256$, but it fails the matching tasks (Table~\ref{tab:accuracy}). The simulated quantum layer, which shares the pairwise structure, takes 171~ms; on hardware it would instead need $N^2\approx1.7\times10^7$ overlap circuits.
+Fig.~\ref{fig:timing} confirms the cost analysis. Softmax dot-product attention and the pairwise CP kernel grow quadratically, taking 129 and 167~ms at $N=4{,}096$. \cpla{} grows linearly and takes 5.7~ms, about 22$\times$ faster than softmax attention. Elu$+1$ linear attention is faster still (2.0~ms) because its feature dimension is 16 rather than $4^n=256$, but it fails the matching tasks (Table~\ref{tab:accuracy}). The simulated quantum layer, which shares the pairwise structure, takes 181~ms; on hardware it would instead need $N^2\approx1.7\times10^7$ overlap circuits.
 
 \subsection{Trainability of the Quantum Layer}
 \label{sec:trainability}
