@@ -126,7 +126,9 @@ For real states, as produced by $R_Y$ and CNOT gates, $\Phi(x)=\psi(x)\otimes\ps
 \subsection{Cosine-Product Linear Attention}
 Combining both propositions gives \cpla. With $\psi(x)=\bigotimes_k[\cos\frac{\phi_k(x)}{2},\sin\frac{\phi_k(x)}{2}]\in\mathbb{R}^{2^n}$ and $\Phi(x)=\psi(x)\otimes\psi(x)\in\mathbb{R}^{4^n}$, \cpla{} evaluates \eqref{eq:linear} with $\Phi_Q=\Phi_K=\Phi$. It computes the CP kernel exactly, needs no quantum hardware, and has $nd+n$ score parameters. Unlike softmax attention it has no temperature; the sharpness of the kernel is controlled by the learned encoding scale.
 
-Table~\ref{tab:cost} summarizes the costs. For a fixed small $n$, \cpla{} is linear in $N$; its constant $4^n$ limits it to registers of roughly 4 to 6 qubits, which is the regime where the quantum layer also trains best (Section~\ref{sec:trainability}).
+\textit{Remark.} For real $\psi$ the vector $\psi\otimes\psi$ is redundant: its entries for each qubit pair are symmetric, so the CP kernel needs fewer than $4^n$ features. Writing $\cos^2\frac{a-b}{2}=\frac12(1+\cos a\cos b+\sin a\sin b)$ shows that the per-qubit map $\frac{1}{\sqrt2}[1,\cos\phi_k,\sin\phi_k]$ already reproduces \eqref{eq:cp} exactly, giving $3^n$ features. A companion paper~\cite{singuru2026cost} develops this reduction and uses it to bound the training cost of quantum attention; here we keep the general $4^n$ map of Proposition~\ref{prop:lin}, which also covers trained ansatz states.
+
+Table~\ref{tab:cost} summarizes the costs. For a fixed small $n$, \cpla{} is linear in $N$; its constant $4^n$ ($3^n$ with the remark above) limits it to registers of roughly 4 to 6 qubits, which is the regime where the quantum layer also trains best (Section~\ref{sec:trainability}).
 
 \begin{table}[t]
 \caption{Cost per Sequence of Length $N$ (Embedding Width $d$)}
@@ -308,7 +310,7 @@ Accuracy falls from 0.93 with exact scores to 0.76 at about three shots per scor
 
 \textit{What does not.} At the sizes where quantum fidelity attention trains, it is classically simulable, and Proposition~\ref{prop:lin} makes simulation cheaper in $N$ than hardware execution. At sizes where simulation would be hard, gradients have already vanished. A quantum advantage would need encodings whose fidelity resists classical evaluation together with local observables that avoid barren plateaus, a combination that recent theory suggests is difficult~\cite{cerezo2025simulability}.
 
-\textit{Limitations.} The matching tasks are synthetic and favor kernels that peak at equal inputs. SST-2 is a single, short-sequence benchmark, and our models are small single-layer classifiers rather than full Transformers. The $4^n$ feature dimension restricts \cpla{} to few features per head; multi-head and deeper variants remain to be tested. The noise model covers shot noise on forward scores only, and no experiments ran on quantum hardware. The qubit and noise sweeps use three seeds.
+\textit{Limitations.} The matching tasks are synthetic and favor kernels that peak at equal inputs. SST-2 is a single, short-sequence benchmark, and our models are small single-layer classifiers rather than full Transformers. The exponential feature dimension ($4^n$, or $3^n$ for the CP kernel) restricts \cpla{} to few features per head; multi-head and deeper variants remain to be tested. The noise model covers shot noise on forward scores only, and no experiments ran on quantum hardware. The qubit and noise sweeps use three seeds.
 
 % ===========================================================================
 \section{Conclusion}
@@ -321,7 +323,6 @@ The Qiskit reference implementation with parameter-shift autograd, the statevect
 Experiments used PyTorch 2.14 and Qiskit 2.5 on a two-core CPU.
 
 \section*{Disclosure of AI Assistance}
-% TODO: adjust to the target venue's policy.
 Generative AI tools were used to assist with code development, experiment design and drafting of this manuscript. The author reviewed, verified and takes full responsibility for all content.
 
 \bibliographystyle{IEEEtran}
